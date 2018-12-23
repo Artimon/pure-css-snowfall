@@ -1,0 +1,75 @@
+$count: 50;
+$screenOffset: 30px;
+$fallDuration: 8;
+$windNoise: 30;
+$windSpeed: 10;
+$sizeNoise: 20;
+$imageSize: 20px;
+$fontSize: 40px;
+
+snowfall {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	display: block;
+
+	font-size: $fontSize;
+
+	overflow: hidden;
+	pointer-events: none;
+
+	snowflake {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 50000000;
+
+		img {
+			width: $imageSize;
+		}
+	}
+
+	@while ($count > 0) {
+		$left: random(100);
+		$deltaLeft: random(2 * $windNoise) - $windNoise + $windSpeed;
+		$scale: 1 + (random(2 * $sizeNoise) - $sizeNoise) / 100;
+
+		snowflake:nth-child(#{$count}) {
+			animation: animation-snowflake-#{$count} linear infinite;
+			animation-duration: $fallDuration + random($fallDuration) + s;
+			animation-delay: random(2 * $fallDuration) - (2 * $fallDuration) + s;
+		}
+
+		@keyframes animation-snowflake-#{$count} {
+			0% {
+				top: calc(0% - #{$screenOffset});
+				left: percentage($left / 100);
+				transform:
+					scale($scale)
+					rotate3d(
+						random(100) / 100,
+						random(100) / 100,
+						random(100) / 100,
+						0deg
+					);
+			}
+			100% {
+				top: calc(100% + #{$screenOffset});
+				left: percentage(($left + $deltaLeft) / 100);
+				transform:
+					scale($scale)
+					rotate3d(
+						random(100) / 100,
+						random(100) / 100,
+						random(100) / 100,
+						(random(540) + 540) * ((random(2) - 1) * 2 - 1) + deg
+					);
+			}
+		}
+
+		$count: $count - 1;
+	}
+}
